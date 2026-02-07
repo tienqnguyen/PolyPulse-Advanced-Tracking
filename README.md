@@ -1,7 +1,7 @@
 # PolyPulse OS | Advanced Polymarket Terminal
 
 PolyPulse is a high-fidelity analytics and surveillance platform for Polymarket. It provides real-time tracking of CLOB (Central Limit Order Book) data, AI-driven sentiment analysis, whale movement alerts, and arbitrage detection.
-
+READY TO RUN : https://aistudio.google.com/apps/drive/1AytBpbzEd9N8LRyDQ8Ru2Jnj3fChDbYb?fullscreenApplet=true 
 ## 🚀 Key Features
 
 - **Real-Time Market Surveillance**: Live tracking of active prediction markets with volume and liquidity diagnostics.
