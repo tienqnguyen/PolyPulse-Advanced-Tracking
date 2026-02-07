@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="en" class="theme-blue theme-dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PolyPulse | CLOB Terminal v3.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --terminal-bg: #020617;
+        --terminal-sidebar: rgba(2, 6, 23, 0.7);
+        --terminal-text: #f8fafc;
+        --terminal-text-dim: #94a3b8;
+        --terminal-border: rgba(255, 255, 255, 0.1);
+        --accent-color: #3b82f6;
+        --accent-glow: rgba(59, 130, 246, 0.3);
+        --card-bg: rgba(15, 23, 42, 0.4);
+        --grid-color: rgba(59, 130, 246, 0.15);
+        --glass-blur: 24px;
+      }
+
+      .theme-light {
+        --terminal-bg: #f8fafc;
+        --terminal-sidebar: rgba(255, 255, 255, 0.75);
+        --terminal-text: #020617;
+        --terminal-text-dim: #334155;
+        --terminal-border: rgba(0, 0, 0, 0.1);
+        --card-bg: rgba(255, 255, 255, 0.6);
+        --accent-color: #2563eb;
+        --accent-glow: rgba(37, 99, 235, 0.15);
+        --grid-color: rgba(0, 0, 0, 0.08);
+      }
+      
+      .theme-green { --accent-color: #10b981; --accent-glow: rgba(16, 185, 129, 0.3); --grid-color: rgba(16, 185, 129, 0.15); }
+      .theme-amber { --accent-color: #f59e0b; --accent-glow: rgba(245, 158, 11, 0.3); --grid-color: rgba(245, 158, 11, 0.15); }
+      .theme-red { --accent-color: #ef4444; --accent-glow: rgba(239, 68, 68, 0.3); --grid-color: rgba(239, 68, 68, 0.15); }
+      .theme-purple { --accent-color: #a855f7; --accent-glow: rgba(168, 85, 247, 0.3); --grid-color: rgba(168, 85, 247, 0.15); }
+      .theme-cyan { --accent-color: #06b6d4; --accent-glow: rgba(6, 182, 212, 0.3); --grid-color: rgba(6, 182, 212, 0.15); }
+
+      body {
+        font-family: 'JetBrains Mono', monospace;
+        background-color: var(--terminal-bg);
+        color: var(--terminal-text);
+        margin: 0;
+        overflow: hidden;
+        transition: background-color 0.4s ease, color 0.4s ease;
+        font-size: 16px; 
+      }
+      
+      /* Refined Space Background Animation */
+      .space-container {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background: var(--terminal-bg);
+        overflow: hidden;
+        pointer-events: none;
+        perspective: 1200px;
+      }
+
+      .stars-layer {
+        position: absolute;
+        inset: -100%;
+        background-repeat: repeat;
+        background-size: 600px 600px;
+        transform: translateZ(0);
+      }
+
+      .stars-layer-1 {
+        background-image: 
+          radial-gradient(1.5px 1.5px at 15% 25%, #fff, transparent),
+          radial-gradient(2px 2px at 45% 75%, var(--accent-color), transparent),
+          radial-gradient(1px 1px at 85% 45%, #fff, transparent);
+        opacity: 0.3;
+        animation: stars-move 180s linear infinite;
+      }
+
+      .stars-layer-2 {
+        background-image: 
+          radial-gradient(1px 1px at 30% 60%, #fff, transparent),
+          radial-gradient(1.5px 1.5px at 70% 20%, var(--accent-color), transparent),
+          radial-gradient(1px 1px at 50% 90%, #fff, transparent);
+        opacity: 0.15;
+        scale: 1.5;
+        animation: stars-move 280s linear infinite reverse;
+      }
+
+      @keyframes stars-move {
+        from { transform: rotate(0deg) scale(1); }
+        to { transform: rotate(360deg) scale(1.1); }
+      }
+
+      .cyber-grid {
+        position: absolute;
+        bottom: -20%;
+        left: -50%;
+        right: -50%;
+        height: 100%;
+        background-image: 
+          linear-gradient(var(--grid-color) 2px, transparent 2px),
+          linear-gradient(90deg, var(--grid-color) 2px, transparent 2px);
+        background-size: 100px 100px;
+        transform: rotateX(55deg) translateZ(0);
+        transform-origin: bottom center;
+        animation: grid-scroll 15s linear infinite;
+        opacity: 0.5;
+        mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%);
+        -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%);
+      }
+
+      @keyframes grid-scroll {
+        from { background-position: 0 0; }
+        to { background-position: 0 100px; }
+      }
+
+      .nebula {
+        position: absolute;
+        width: 140vw;
+        height: 140vh;
+        background: radial-gradient(circle at center, var(--accent-glow) 0%, transparent 60%);
+        filter: blur(180px);
+        opacity: 0.25;
+        border-radius: 50%;
+        animation: nebula-drift 80s infinite alternate ease-in-out;
+      }
+
+      @keyframes nebula-drift {
+        0% { transform: translate(-15%, -15%) rotate(0deg) scale(1); }
+        50% { transform: translate(15%, 5%) rotate(10deg) scale(1.3); }
+        100% { transform: translate(-5%, 15%) rotate(-5deg) scale(1.1); }
+      }
+
+      /* Glassmorphism Classes */
+      .glass-sidebar {
+        background: var(--terminal-sidebar);
+        backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+        border-right: 1px solid var(--terminal-border);
+      }
+
+      .glass-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+        border: 1px solid var(--terminal-border);
+        box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      }
+
+      .glass-header {
+        background: rgba(var(--terminal-bg-rgb, 2, 6, 23), 0.4);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--terminal-border);
+      }
+
+      /* Bright Theme Consistency */
+      .theme-light .text-dim { color: #475569 !important; font-weight: 600; }
+      .theme-light .font-black { color: #020617 !important; }
+      .theme-light .bg-black\/5 { background: rgba(0,0,0,0.06); }
+      .theme-light .glass-sidebar { background: rgba(255, 255, 255, 0.7); }
+      .theme-light .glass-card { background: rgba(255, 255, 255, 0.5); }
+      
+      .scanline {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.02) 50%);
+        background-size: 100% 4px;
+        pointer-events: none;
+        opacity: 0.15;
+      }
+
+      .text-accent { color: var(--accent-color); font-weight: 700; }
+      .bg-accent { background-color: var(--accent-color); }
+      .border-accent { border-color: var(--accent-color); }
+      .shadow-accent { box-shadow: 0 0 35px var(--accent-glow); }
+      
+      ::-webkit-scrollbar { width: 8px; height: 8px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: var(--terminal-border); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
+      ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); background-clip: content-box; }
+      
+      .custom-scrollbar { scrollbar-width: thin; scrollbar-color: var(--terminal-border) transparent; }
+    </style>
+    <script type="importmap">
+    {
+      "imports": {
+        "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
+        "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+        "react/": "https://esm.sh/react@^19.2.4/",
+        "react": "https://esm.sh/react@^19.2.4",
+        "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <div class="space-container">
+      <div class="stars-layer stars-layer-1"></div>
+      <div class="stars-layer stars-layer-2"></div>
+      <div class="nebula" style="top: -25%; left: -25%"></div>
+      <div class="nebula" style="bottom: -35%; right: -35%; background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 60%)"></div>
+      <div class="cyber-grid"></div>
+    </div>
+    <div class="scanline"></div>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
